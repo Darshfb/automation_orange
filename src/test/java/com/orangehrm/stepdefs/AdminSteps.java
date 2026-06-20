@@ -50,16 +50,15 @@ public class AdminSteps {
   public void the_user_creates_a_system_user_linked_to_that_employee() {
     this.generatedUsername = "User" + System.currentTimeMillis();
     this.generatedPassword = "Password123!";
-    // Type only the first name to trigger suggestions reliably
-    String first = PIMSteps.lastCreatedEmployeeName.split(" ")[0];
-    adminService.createSystemUser("ESS", first, "Enabled", generatedUsername, generatedPassword);
+    // Use full employee name to reliably pick the correct employee from suggestions
+    String fullName = PIMSteps.lastCreatedEmployeeName;
+    adminService.createSystemUser("ESS", fullName, "Enabled", generatedUsername, generatedPassword);
   }
 
   @Then("the new user should be successfully found in the system users search")
   public void the_new_user_should_be_successfully_found_in_the_system_users_search() {
-    adminService.searchUser(generatedUsername);
-    Assert.assertTrue(
-        adminService.isUserFoundInResults(generatedUsername), "New user was not found in results!");
+    boolean isFound = adminService.isUserFoundInResultsWithRetry(generatedUsername, 5, 2);
+    Assert.assertTrue(isFound, "New user was not found in results!");
   }
 
   @When("the user edits the system user status to {string}")

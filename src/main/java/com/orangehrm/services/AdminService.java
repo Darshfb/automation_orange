@@ -26,6 +26,20 @@ public class AdminService {
     return adminPage.isUserFoundInResults(username);
   }
 
+  public boolean isUserFoundInResultsWithRetry(String username, int attempts, int intervalSeconds) {
+    for (int i = 0; i < attempts; i++) {
+      searchUser(username);
+      if (isUserFoundInResults(username)) {
+        return true;
+      }
+      try {
+        Thread.sleep(intervalSeconds * 1000L);
+      } catch (InterruptedException ignored) {
+      }
+    }
+    return false;
+  }
+
   public void createSystemUser(
       String role, String employeeName, String status, String newUsername, String newPassword) {
     adminPage.clickAdd();

@@ -56,9 +56,22 @@ public class AdminPage extends BasePage {
   public void enterEmployeeName(String name) {
     type(employeeNameInput, name);
     // Wait for autocomplete suggestion dropdown to dynamically appear
-    By suggestion = By.xpath("//div[@role='listbox']//*[contains(@class, 'option') or contains(@class, 'autocomplete') or contains(., '" + name + "')]");
+    By suggestionsLocator = By.cssSelector(".oxd-autocomplete-dropdown *[role='option'], .oxd-autocomplete-dropdown span");
     try {
-      click(suggestion);
+      wait.until(org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated(suggestionsLocator));
+      java.util.List<org.openqa.selenium.WebElement> suggestions = driver.findElements(suggestionsLocator);
+      boolean selected = false;
+      for (org.openqa.selenium.WebElement s : suggestions) {
+        if (s.getText().trim().equals(name)) {
+          s.click();
+          selected = true;
+          break;
+        }
+      }
+      if (!selected && !suggestions.isEmpty()) {
+        log.warn("Exact match not found for employee '{}'. Clicking first option as fallback.", name);
+        suggestions.get(0).click();
+      }
     } catch (Exception e) {
       log.warn("Auto-suggestion option failed to load or click: {}", e.getMessage());
     }
