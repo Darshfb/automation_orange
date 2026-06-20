@@ -24,7 +24,12 @@ jobs:
       run: docker compose up -d
         
     - name: Wait for Grid to be ready
-      run: sleep 15
+      run: |
+        echo "Waiting for Selenium Grid to be ready..."
+        while ! curl -sSL "http://localhost:4444/status" | grep -q '"ready": true'; do
+          sleep 5
+        done
+        echo "Selenium Grid is ready!"
       
     - name: Build and Test
       run: mvn clean verify -Dexecution.mode=remote
