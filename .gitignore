@@ -1,0 +1,9 @@
+target/
+logs/
+.allure/
+apache-maven-*/
+*.zip
+*.log
+.idea/
+*.iml
+.DS_Store
