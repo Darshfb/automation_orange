@@ -111,6 +111,9 @@ public class PIMPage extends BasePage {
   }
 
   public void updateMiddleName(String middleName) {
+    try {
+      Thread.sleep(3000); // Wait for async form population to complete
+    } catch (InterruptedException ignored) {}
     type(middleNameInput, middleName);
     waitForSpinnerToDisappear();
     click(personalDetailsSaveButton);
