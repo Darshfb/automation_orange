@@ -107,8 +107,8 @@ public class PIMPage extends BasePage {
   }
 
   public void updateMiddleName(String middleName) {
-    // Better Practice: Explicit Wait. We wait dynamically until the First Name field is 
-    // populated by the backend API. Since First Name is mandatory, once it has a value, 
+    // Better Practice: Explicit Wait. We wait dynamically until the First Name field is
+    // populated by the backend API. Since First Name is mandatory, once it has a value,
     // we know the React form has finished loading the employee data.
     wait.until(driver -> !find(firstNameInput).getAttribute("value").isEmpty());
 

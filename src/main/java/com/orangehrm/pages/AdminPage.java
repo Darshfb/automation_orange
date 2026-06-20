@@ -55,25 +55,32 @@ public class AdminPage extends BasePage {
 
   public void enterEmployeeName(String name) {
     type(employeeNameInput, name);
-    // Wait for autocomplete suggestion dropdown to dynamically appear
-    By suggestionsLocator = By.cssSelector(".oxd-autocomplete-dropdown *[role='option'], .oxd-autocomplete-dropdown span");
+    // Wait for autocomplete suggestion dropdown to dynamically appear with the ACTUAL name (not
+    // just 'Searching....')
+    By suggestionsLocator =
+        By.cssSelector(
+            ".oxd-autocomplete-dropdown *[role='option'], .oxd-autocomplete-dropdown span");
     try {
-      wait.until(org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated(suggestionsLocator));
-      java.util.List<org.openqa.selenium.WebElement> suggestions = driver.findElements(suggestionsLocator);
-      boolean selected = false;
-      for (org.openqa.selenium.WebElement s : suggestions) {
-        if (s.getText().trim().equals(name)) {
-          s.click();
-          selected = true;
-          break;
-        }
-      }
-      if (!selected && !suggestions.isEmpty()) {
-        log.warn("Exact match not found for employee '{}'. Clicking first option as fallback.", name);
-        suggestions.get(0).click();
-      }
+      org.openqa.selenium.WebElement matchingOption =
+          wait.until(
+              d -> {
+                java.util.List<org.openqa.selenium.WebElement> options =
+                    d.findElements(suggestionsLocator);
+                for (org.openqa.selenium.WebElement opt : options) {
+                  String text = opt.getText().trim();
+                  // Skip 'Searching....' or empty text
+                  if (!text.isEmpty()
+                      && !text.contains("Searching")
+                      && (text.equals(name) || text.contains(name))) {
+                    return opt;
+                  }
+                }
+                return null; // Return null to make wait.until keep trying
+              });
+      matchingOption.click();
     } catch (Exception e) {
-      log.warn("Auto-suggestion option failed to load or click: {}", e.getMessage());
+      log.warn(
+          "Auto-suggestion for employee '{}' failed to load or click: {}", name, e.getMessage());
     }
   }
 

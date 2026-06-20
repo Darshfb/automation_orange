@@ -56,14 +56,18 @@ public class AdminService {
   }
 
   public void updateUserStatus(String username, String status) {
-    adminPage.searchUser(username);
+    if (!isUserFoundInResultsWithRetry(username, 5, 2)) {
+      throw new RuntimeException("User " + username + " not found after retries. Cannot edit.");
+    }
     adminPage.clickEditUser(username);
     adminPage.selectStatus(status);
     adminPage.clickSaveUser();
   }
 
   public void deleteUser(String username) {
-    adminPage.searchUser(username);
+    if (!isUserFoundInResultsWithRetry(username, 5, 2)) {
+      throw new RuntimeException("User " + username + " not found after retries. Cannot delete.");
+    }
     adminPage.clickDeleteUser(username);
   }
 
