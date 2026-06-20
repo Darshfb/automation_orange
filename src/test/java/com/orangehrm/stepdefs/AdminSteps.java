@@ -48,7 +48,7 @@ public class AdminSteps {
 
   @When("the user creates a system user linked to that employee")
   public void the_user_creates_a_system_user_linked_to_that_employee() {
-    this.generatedUsername = "User" + System.currentTimeMillis();
+    this.generatedUsername = "user" + System.currentTimeMillis();
     this.generatedPassword = "Password123!";
     // Use full employee name to reliably pick the correct employee from suggestions
     String fullName = PIMSteps.lastCreatedEmployeeName;

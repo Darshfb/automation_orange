@@ -125,8 +125,8 @@ public class AdminPage extends BasePage {
   public void clickEditUser(String username) {
     By editBtn =
         By.xpath(
-            "//div[@class='oxd-table-card' and descendant::div[contains(., '"
-                + username
+            "//div[@class='oxd-table-card' and descendant::div[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '"
+                + username.toLowerCase()
                 + "')]]//button[descendant::i[contains(@class, 'pencil')]]");
     click(editBtn);
     waitForPageLoad();
@@ -135,8 +135,8 @@ public class AdminPage extends BasePage {
   public void clickDeleteUser(String username) {
     By deleteBtn =
         By.xpath(
-            "//div[@class='oxd-table-card' and descendant::div[contains(., '"
-                + username
+            "//div[@class='oxd-table-card' and descendant::div[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '"
+                + username.toLowerCase()
                 + "')]]//button[descendant::i[contains(@class, 'trash')]]");
     click(deleteBtn);
     click(confirmDeleteButton);
@@ -146,8 +146,8 @@ public class AdminPage extends BasePage {
   public boolean isUserStatusInResults(String username, String status) {
     By userRow =
         By.xpath(
-            "//div[@class='oxd-table-card' and descendant::div[contains(., '"
-                + username
+            "//div[@class='oxd-table-card' and descendant::div[contains(translate(., 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz'), '"
+                + username.toLowerCase()
                 + "')] and descendant::div[contains(., '"
                 + status
                 + "')]]");
