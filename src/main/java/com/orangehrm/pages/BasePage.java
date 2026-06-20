@@ -25,6 +25,11 @@ public class BasePage {
     return wait.until(ExpectedConditions.presenceOfElementLocated(locator));
   }
 
+  protected WebElement waitForVisibility(By locator) {
+    log.info("Waiting for visibility of element: {}", locator);
+    return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+  }
+
   public void waitForSpinnerToDisappear() {
     try {
       WebDriverWait shortWait = new WebDriverWait(driver, Duration.ofSeconds(5));

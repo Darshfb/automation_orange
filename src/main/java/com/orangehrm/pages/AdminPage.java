@@ -55,17 +55,9 @@ public class AdminPage extends BasePage {
 
   public void enterEmployeeName(String name) {
     type(employeeNameInput, name);
-    // Wait for autocomplete to populate
+    // Wait for autocomplete suggestion dropdown to dynamically appear
+    By suggestion = By.xpath("//div[@role='listbox']//*[contains(@class, 'option') or contains(@class, 'autocomplete') or contains(., '" + name + "')]");
     try {
-      Thread.sleep(3000);
-    } catch (InterruptedException ignored) {
-    }
-    try {
-      By suggestion =
-          By.xpath(
-              "//div[@role='listbox']//*[contains(@class, 'option') or contains(@class, 'autocomplete') or contains(., '"
-                  + name
-                  + "')]");
       click(suggestion);
     } catch (Exception e) {
       log.warn("Auto-suggestion option failed to load or click: {}", e.getMessage());
@@ -99,10 +91,6 @@ public class AdminPage extends BasePage {
       click(By.cssSelector("button.oxd-button--secondary"));
     }
     waitForSpinnerToDisappear();
-    try {
-      Thread.sleep(2000);
-    } catch (InterruptedException ignored) {
-    }
   }
 
   public boolean isUserFoundInResults(String username) {
@@ -115,10 +103,6 @@ public class AdminPage extends BasePage {
   }
 
   public boolean isNoRecordsFoundMessageDisplayed() {
-    try {
-      Thread.sleep(2000);
-    } catch (InterruptedException ignored) {
-    }
     return isDisplayed(noRecordsFoundText);
   }
 
@@ -142,10 +126,6 @@ public class AdminPage extends BasePage {
                 + username
                 + "')]]//button[descendant::i[contains(@class, 'trash')]]");
     click(deleteBtn);
-    try {
-      Thread.sleep(1500);
-    } catch (InterruptedException ignored) {
-    }
     click(confirmDeleteButton);
     waitForPageLoad();
   }

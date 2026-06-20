@@ -36,40 +36,21 @@ public class BuzzPage extends BasePage {
   }
 
   public boolean isPostContentVisibleInFeed(String message) {
-    // Sleep a short buffer before checking the feed
     try {
-      Thread.sleep(3000);
-    } catch (InterruptedException ignored) {
-    }
-    int attempts = 0;
-    while (attempts < 15) {
+      // Explicit wait: dynamically wait for the post to appear in the DOM
+      wait.until(d -> d.findElement(By.tagName("body")).getText().contains(message));
+      return true;
+    } catch (org.openqa.selenium.TimeoutException e) {
+      log.warn("Post not visible after initial wait. Refreshing feed page...");
+      driver.navigate().refresh();
+      waitForPageLoad();
       try {
-        String bodyText = driver.findElement(By.tagName("body")).getText();
-        if (bodyText.contains(message)) {
-          return true;
-        }
-      } catch (Exception e) {
-        log.warn("Attempt {} checking page body text failed: {}", attempts, e.getMessage());
+        // Try one more time after refresh
+        wait.until(d -> d.findElement(By.tagName("body")).getText().contains(message));
+        return true;
+      } catch (org.openqa.selenium.TimeoutException ex) {
+        return false;
       }
-      if (attempts == 3 || attempts == 8) {
-        log.info("Post not visible. Refreshing feed page...");
-        try {
-          driver.navigate().refresh();
-          waitForPageLoad();
-          try {
-            Thread.sleep(2000);
-          } catch (InterruptedException ignored) {
-          }
-        } catch (Exception e) {
-          log.warn("Failed to refresh page: {}", e.getMessage());
-        }
-      }
-      try {
-        Thread.sleep(1000);
-      } catch (InterruptedException ignored) {
-      }
-      attempts++;
     }
-    return false;
   }
 }

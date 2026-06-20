@@ -41,20 +41,12 @@ public class PIMService {
     pimPage.updateMiddleName(middleName);
     pimPage.navigateToEmployeeList();
     pimPage.clickReset();
-    try {
-      Thread.sleep(2000);
-    } catch (InterruptedException ignored) {
-    }
   }
 
   public boolean verifyEmployeeMiddleNameInList(String empId, String middleName) {
     pimPage.navigateToEmployeeList();
     pimPage.clickReset();
     pimPage.searchEmployeeById(empId);
-    try {
-      Thread.sleep(3000);
-    } catch (InterruptedException ignored) {
-    }
     return pimPage.isMiddleNameInList(empId, middleName);
   }
 

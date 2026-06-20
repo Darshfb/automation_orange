@@ -83,10 +83,6 @@ public class PIMPage extends BasePage {
       click(By.cssSelector("button.oxd-button--secondary"));
     }
     waitForSpinnerToDisappear();
-    try {
-      Thread.sleep(2000);
-    } catch (InterruptedException ignored) {
-    }
   }
 
   public boolean isEmployeeIdInList(String empId) {
@@ -111,17 +107,16 @@ public class PIMPage extends BasePage {
   }
 
   public void updateMiddleName(String middleName) {
-    try {
-      Thread.sleep(3000); // Wait for async form population to complete
-    } catch (InterruptedException ignored) {}
+    // Better Practice: Explicit Wait. We wait dynamically until the First Name field is 
+    // populated by the backend API. Since First Name is mandatory, once it has a value, 
+    // we know the React form has finished loading the employee data.
+    wait.until(driver -> !find(firstNameInput).getAttribute("value").isEmpty());
+
     type(middleNameInput, middleName);
     waitForSpinnerToDisappear();
     click(personalDetailsSaveButton);
-    // Wait for database sync, then refresh to avoid stale local state
-    try {
-      Thread.sleep(5000);
-    } catch (InterruptedException ignored) {
-    }
+    // Explicit wait for the Success toast message instead of a hard sleep
+    waitForVisibility(successToast);
     driver.navigate().refresh();
     waitForPageLoad();
     waitForSpinnerToDisappear();
@@ -145,10 +140,6 @@ public class PIMPage extends BasePage {
                 + empId
                 + "')]]//button[descendant::i[contains(@class, 'trash')]]");
     click(deleteBtn);
-    try {
-      Thread.sleep(1500);
-    } catch (InterruptedException ignored) {
-    }
     click(confirmDeleteButton);
     waitForPageLoad();
   }
